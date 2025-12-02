@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>船橋市 特定健診チェックシート（はい/いいえ形式）</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        h2,h3 { margin-bottom: 10px; }
+        .section { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="checkbox"] { margin-right: 5px; }
+        button { padding: 12px 24px; font-size: 16px; margin-top: 10px; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 5px; white-space: pre-line; font-weight: bold; }
+        .green { background-color: #d4edda; color: #155724; }
+        .orange { background-color: #fff3cd; color: #856404; }
+        .red { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<h2>船橋市 特定健診チェックシート</h2>
+
+<div class="section">
+    <h3>基本情報</h3>
+    <label>性別：
+        <select id="sex">
+            <option value="M">男性</option>
+            <option value="F">女性</option>
+        </select>
+    </label>
+</div>
+
+<div class="section">
+    <h3>身体測定・BMI</h3>
+    <label><input type="checkbox" id="waist"> 腹囲が基準を超えている（男性 ≧85cm / 女性 ≧90cm）</label>
+    <label><input type="checkbox" id="bmi"> BMI ≧25（肥満）</label>
+</div>
+
+<div class="section">
+    <h3>追加リスク項目</h3>
+    <label><input type="checkbox" id="bp"> 血圧高め（収縮期 ≧130 / 拡張期 ≧85）</label>
+    <label><input type="checkbox" id="bp_med"> 血圧の薬を服薬中</label>
+    <label><input type="checkbox" id="glucose"> 血糖高め（空腹時血糖 ≧100 または HbA1c ≧5.6%）</label>
+    <label><input type="checkbox" id="glucose_med"> 糖尿病薬を服薬中</label>
+    <label><input type="checkbox" id="lipid"> 脂質異常（中性脂肪 ≧150 または HDL<40）</label>
+    <label><input type="checkbox" id="lipid_med"> 脂質異常症薬を服薬中</label>
+</div>
+
+<div class="section">
+    <h3>その他（任意）</h3>
+    <label><input type="checkbox" id="urine"> 尿蛋白 陽性</label>
+    <label><input type="checkbox" id="liver"> 肝機能等 指摘歴あり</label>
+</div>
+
+<button onclick="judge()">判定する</button>
+
+<div class="result" id="result"></div>
+
+<script>
+    function judge() {
+      const waist = document.getElementById('waist').checked;
+      const bmi = document.getElementById('bmi').checked;
+      const bp = document.getElementById('bp').checked;
+      const bp_med = document.getElementById('bp_med').checked;
+      const glucose = document.getElementById('glucose').checked;
+      const glucose_med = document.getElementById('glucose_med').checked;
+      const lipid = document.getElementById('lipid').checked;
+      const lipid_med = document.getElementById('lipid_med').checked;
+      const urine = document.getElementById('urine').checked;
+      const liver = document.getElementById('liver').checked;
+
+      // リスク項目カウント（服薬も含む）
+      let riskCount = 0;
+      if (bp || bp_med) riskCount++;
+      if (glucose || glucose_med) riskCount++;
+      if (lipid || lipid_med) riskCount++;
+      if (bmi) riskCount++;
+
+      // メタボ判定（3段階）
+      let metabo = "", metaboClass = "green";
+      if (waist && riskCount >= 1) {
+        metabo = "メタボ";
+        metaboClass = "red";
+      } else if (!waist && riskCount >= 1) {
+        metabo = "メタボ予備軍";
+        metaboClass = "orange";
+      } else {
+        metabo = "非該当";
+        metaboClass = "green";
+      }
+
+      // 保健指導対象判定
+      let shidou = "", shidouClass = "green";
+      if (metabo === "メタボ" && riskCount >= 2) {
+        shidou = "積極的支援対象";
+        shidouClass = "red";
+      } else if (metabo === "メタボ" && riskCount === 1) {
+        shidou = "動機付け支援対象";
+        shidouClass = "orange";
+      } else if (metabo === "メタボ予備軍") {
+        shidou = "動機付け支援対象";
+        shidouClass = "orange";
+      } else {
+        shidou = "支援対象外";
+        shidouClass = "green";
+      }
+
+      // 結果表示
+      let notes = [];
+      notes.push(腹囲: ${waist ? "基準超" : "正常"});
+      notes.push(BMI ≧25: ${bmi ? "はい" : "いいえ"});
+      notes.push(血圧: ${bp ? "高め" : "正常"}${bp_med ? " / 服薬中" : ""});
+      notes.push(血糖: ${glucose ? "高め" : "正常"}${glucose_med ? " / 服薬中" : ""});
+      notes.push(脂質: ${lipid ? "異常あり" : "正常"}${lipid_med ? " / 服薬中" : ""});
+      if (urine) notes.push("尿蛋白: 陽性");
+      if (liver) notes.push("肝機能等: 指摘あり");
+
+      document.getElementById('result').innerHTML =
+          notes.join("<br>") + "<br><br>" +
+          <span class="${metaboClass}">メタボ判定: ${metabo}</span><br> +
+          <span class="${shidouClass}">保健指導対象: ${shidou}</span>;
+    }
+</script>
+
+</body>
+</html>
