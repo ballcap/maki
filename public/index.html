@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>メタボ＆保健指導チェックシート 完全版</title>
-<style>
-body { font-family: Arial; padding: 20px; }
-h2 { margin-bottom: 10px; }
-.section { margin-bottom: 20px; }
-.result { font-size: 1.3em; font-weight: bold; padding: 15px; margin-top: 15px; border-radius: 10px; }
-.green { background: #d4f7d4; }   
-.yellow { background: #fff3b0; }  
-.red { background: #ffc5c5; }    
-</style>
+  <meta charset="UTF-8">
+  <title>メタボ & 保健指導チェックシート 完全版（性別入力なし）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    h2 { margin-bottom: 10px; }
+    .section { margin-bottom: 20px; }
+    .result { font-size: 1.3em; font-weight: bold; padding: 15px; margin-top: 15px; border-radius: 10px; }
+    .green { background: #d4f7d4; }   
+    .yellow { background: #fff3b0; }  
+    .red { background: #ffc5c5; }    
+  </style>
 </head>
+
 <body>
 
 <h2>メタボチェック & 保健指導チェックシート</h2>
@@ -21,9 +23,6 @@ h2 { margin-bottom: 10px; }
 
 <div class="section">
 <h3>🔹 ステップ1：腹囲・BMI・服薬</h3>
-性別：<br>
-<label><input type="radio" name="sex" value="male"> 男性</label><br>
-<label><input type="radio" name="sex" value="female"> 女性</label><br><br>
 
 <b>腹囲は基準以上ですか？</b>（男性 ≥ 85cm / 女性 ≥ 90cm）<br>
 <label><input type="radio" name="waist" value="yes"> はい</label>
@@ -69,7 +68,6 @@ h2 { margin-bottom: 10px; }
 
 <script>
 function judge(){
-  // ステップ1
   const waist = document.querySelector('input[name="waist"]:checked')?.value;
   const bmi = document.querySelector('input[name="bmi"]:checked')?.value;
   const med = document.querySelector('input[name="med"]:checked')?.value;
@@ -85,7 +83,7 @@ function judge(){
   }
 
   // ----------------------
-  // メタボ判定
+  // メタボ判定（消してない）
   // ----------------------
   let meta_count=0;
   if(bp==="yes") meta_count++;
@@ -102,14 +100,26 @@ function judge(){
   document.getElementById("result_meta").textContent="【メタボチェック判定】 "+meta_result;
   document.getElementById("result_meta").className="result "+meta_color;
 
+
   // ----------------------
-  // 保健指導判定
+  // 保健指導判定（完全修正版）
   // ----------------------
   let step1_hoken="";
-  if(med==="yes"){ step1_hoken="服薬あり"; }
-  else if(waist==="no" && bmi==="yes"){ step1_hoken="基準1"; }
-  else { step1_hoken="基準2"; }
 
+  // Step1：情報提供で即終了
+  if(med==="yes" || waist==="no"){ 
+    document.getElementById("result_hoken").textContent="【保健指導判定】 情報提供";
+    document.getElementById("result_hoken").className="result green";
+    return;
+  }
+  else if(waist==="no" && bmi==="yes"){
+    step1_hoken="基準1";
+  }
+  else{
+    step1_hoken="基準2";
+  }
+
+  // Step2該当数
   let count2=0;
   if(bp==="yes") count2++;
   if(gl==="yes") count2++;
@@ -117,20 +127,81 @@ function judge(){
 
   let hoken_result="", hoken_color="";
 
-  if(step1_hoken==="服薬あり"){
-    hoken_result="情報提供"; hoken_color="green";
+  // ------------------------
+  // 基準1
+  // ------------------------
+  if(step1_hoken==="基準1"){
+
+    if(count2===0){
+      hoken_result="情報提供"; 
+      hoken_color="green";
+    }
+
+    else if(count2===1){
+      hoken_result="動機づけ支援"; 
+      hoken_color="yellow";
+    }
+
+    else if(count2===2){
+      if(smoke==="no"){
+        hoken_result="動機づけ支援"; 
+        hoken_color="yellow";
+      }else{
+        if(age==="yes"){
+          hoken_result="動機づけ支援"; 
+          hoken_color="yellow";
+        }else{
+          hoken_result="積極的支援"; 
+          hoken_color="red";
+        }
+      }
+    }
+
+    else if(count2===3){
+      if(age==="yes"){
+        hoken_result="動機づけ支援"; 
+        hoken_color="yellow";
+      }else{
+        hoken_result="積極的支援"; 
+        hoken_color="red";
+      }
+    }
   }
-  else if(step1_hoken==="基準1"){
-    if(count2===0){ hoken_result="情報提供"; hoken_color="green"; }
-    else if(count2===1){ hoken_result="動機づけ支援"; hoken_color="yellow"; }
-    else if(count2===2){ hoken_result=(smoke==="no")?"動機づけ支援":(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(smoke==="no" || age==="yes")?"yellow":"red"; }
-    else if(count2===3){ hoken_result=(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(age==="yes")?"yellow":"red"; }
-  }
-  else if(step1_hoken==="基準2"){
-    if(count2===0){ hoken_result="情報提供"; hoken_color="green"; }
-    else if(count2===1){ hoken_result=(smoke==="no")?"動機づけ支援":(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(smoke==="no" || age==="yes")?"yellow":"red"; }
-    else if(count2===2){ hoken_result=(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(age==="yes")?"yellow":"red"; }
-    // 基準2は3項目該当は存在しない
+
+  // ------------------------
+  // 基準2
+  // ------------------------
+  if(step1_hoken==="基準2"){
+
+    if(count2===0){
+      hoken_result="情報提供"; 
+      hoken_color="green";
+    }
+
+    else if(count2===1){
+      if(smoke==="no"){
+        hoken_result="動機づけ支援"; 
+        hoken_color="yellow";
+      }else{
+        if(age==="yes"){
+          hoken_result="動機づけ支援"; 
+          hoken_color="yellow";
+        }else{
+          hoken_result="積極的支援"; 
+          hoken_color="red";
+        }
+      }
+    }
+
+    else if(count2>=2){
+      if(age==="yes"){
+        hoken_result="動機づけ支援"; 
+        hoken_color="yellow";
+      }else{
+        hoken_result="積極的支援"; 
+        hoken_color="red";
+      }
+    }
   }
 
   document.getElementById("result_hoken").textContent="【保健指導判定】 "+hoken_result;
