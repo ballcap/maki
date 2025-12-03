@@ -3,64 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Makiの健康チェック 完全版</title>
+<title>Makiの健康チェック </title>
 <style>
   :root{
     --bg:#f6f8fb; --card:#fff; --primary:#0d6efd; --text:#222;
     --muted:#6c757d; --success:#d4f7d4; --warn:#fff3b0; --danger:#f8d7da;
     --radius:10px; --shadow:0 4px 12px rgba(0,0,0,0.08);
   }
-  body{margin:0;font-family:"Hiragino Kaku Gothic Pro","メイリオ",sans-serif;background:var(--bg);padding:16px;color:var(--text);}
-  h1{font-size:22px;margin-bottom:12px;}
-  h2{font-size:18px;margin:0 0 10px 0;}
+  body{margin:0;font-family:"Kosugi Maru", sans-serif;background:var(--bg);padding:16px;color:var(--text);}
+  h2{font-size:18px;margin:0 0 10px 0;font-weight:700;}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:14px;}
-  label{display:block;margin:6px 0;font-size:14px;}
-  select,input[type="number"]{width:100%;padding:10px;font-size:14px;border-radius:6px;border:1px solid #ddd;box-sizing:border-box;margin-bottom:6px;}
+  label{display:block;margin:8px 0;font-size:15px;font-weight:600;}
+  select,input[type="number"]{width:100%;padding:10px;font-size:15px;border-radius:6px;border:1px solid #ddd;box-sizing:border-box;margin-bottom:6px;}
   .btn{display:block;width:100%;padding:12px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:700;font-size:14px;margin:6px 0;cursor:pointer;transition:0.2s;}
   .btn:hover{opacity:0.9;}
   .btn.secondary{background:#6c757d;}
-  .checks label{display:flex;align-items:flex-start;gap:8px;margin:4px 0;line-height:1.4;}
-  .result{margin-top:12px;padding:12px;border-radius:8px;font-weight:700;font-size:14px;text-align:center;opacity:0;transform:translateY(4px);transition:all 0.3s ease;}
+  .checks label{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:14px;font-weight:500;}
+  .result{margin-top:12px;padding:12px;border-radius:8px;font-weight:700;font-size:15px;text-align:center;opacity:0;transform:translateY(4px);transition:all 0.3s ease;}
   .result.show{opacity:1;transform:translateY(0);}
   .result.info{background:var(--success); color:#155724;}
   .result.warn{background:var(--warn); color:#856404;}
   .result.danger{background:var(--danger); color:#721c24;}
   .step2{overflow:hidden;max-height:0;transition:max-height 0.4s ease,padding 0.25s;padding:0;}
-  .step2.open{padding:12px 0;max-height:700px;}
+  .step2.open{padding:12px 0;max-height:650px;}
   small{font-size:12px;color:var(--muted);}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>Makiの健康チェック 完全版</h1>
 
 <!-- 理想体重 -->
 <div class="card">
 <h2>① 理想体重計算</h2>
 <label>性別</label>
 <select id="iwGender">
-  <option value="male">男性 (BMI 24)</option>
-  <option value="female">女性 (BMI 22)</option>
+  <option value="male">男性（BMI 24）</option>
+  <option value="female">女性（BMI 22）</option>
 </select>
+
 <label>身長(cm)</label>
-<input type="number" id="iwHeight" placeholder="例: 170">
+<input type="number" id="iwHeight" placeholder="例: 160">
+
 <button class="btn" onclick="calculateIdeal()">計算する</button>
 <button class="btn secondary" onclick="resetIdeal()">クリア</button>
+
 <div id="iwResult" class="result"></div>
 </div>
 
 <!-- メタボ判定 -->
 <div class="card">
 <h2>② メタボ判定</h2>
-<label>腹囲は基準以上ですか？<br><small>男性85cm以上 / 女性90cm以上</small></label>
+
+<label>腹囲は基準以上ですか？<br>
+<small>男性85cm以上 / 女性90cm以上</small></label>
 <select id="mbWaist">
   <option value="no">いいえ（基準未満）</option>
   <option value="yes">はい（基準以上）</option>
 </select>
 
+<div style="font-weight:700;margin:8px 0">ステップ2（①②③に該当）</div>
+
 <div class="checks">
-  <label><input type="checkbox" id="mb_bp">① 血圧: 収縮期 ≥130 / 拡張期 ≥85 / 服薬(血圧)あり 上記いずれかに該当</label>
-  <label><input type="checkbox" id="mb_sugar">② 血糖: 空腹時 ≥110 / HbA1c ≥6.0 / 服薬(血糖)あり 上記いずれかに該当</label>
-  <label><input type="checkbox" id="mb_lipid">③ 脂質: 中性脂肪 ≥150 / HDL <40 / 服薬(脂質)あり 上記いずれかに該当</label>
+  <label>
+    <input type="checkbox" id="mb_bp">
+    ① 収縮期130以上 / 拡張期85以上 / 服薬(血圧)あり<br>
+  </label>
+  <label>
+    <input type="checkbox" id="mb_sugar">
+    ② 空腹時110以上 / HbA1c 6.0%以上 / 服薬(血糖)あり
+  </label>
+  <label>
+    <input type="checkbox" id="mb_lipid">
+    ③ TG150以上 / HDL40未満 / 服薬(脂質)あり
+  </label>
 </div>
 
 <button class="btn" onclick="judgeMetabo()">判定する</button>
@@ -70,55 +85,89 @@
 
 <!-- 保健指導 -->
 <div class="card">
-<h2>③ 保健指導チェック</h2>
-<label>腹囲は基準以上ですか？<br><small>男性85cm以上 / 女性90cm以上</small></label>
+<h2>③ 保健指導</h2>
+
+<label>腹囲は基準以上ですか？<br>
+<small>男性85cm以上 / 女性90cm以上</small></label>
 <select id="bhWaist">
-  <option value="no">いいえ（基準未満）</option>
-  <option value="yes">はい（基準以上）</option>
+  <option value="no">いいえ</option>
+  <option value="yes">はい</option>
 </select>
-<label>BMIは25以上ですか？</label>
+
+<label>BMI25以上ですか？</label>
 <select id="bhBmi">
   <option value="no">いいえ</option>
   <option value="yes">はい</option>
 </select>
+
 <label>服薬はありますか？</label>
 <select id="bhMed">
   <option value="no">いいえ</option>
   <option value="yes">はい</option>
 </select>
-<button class="btn" onclick="checkBHStep1()">ステップ1判定</button>
+
+<button class="btn" onclick="checkBH()">判定</button>
 <button class="btn secondary" onclick="resetBH()">リセット</button>
-<div id="bhStep1Result" class="result"></div>
+
+<div id="bhResult" class="result"></div>
 
 <div id="bhStep2" class="step2">
-<hr>
-<div class="checks">
-  <label><input type="checkbox" id="bhBp">① 血圧: 収縮期 ≥130 / 拡張期 ≥85 上記いずれかに該当</label>
-  <label><input type="checkbox" id="bhSugar">② 血糖: 空腹時 ≥100 / HbA1c ≥5.6 上記いずれかに該当</label>
-  <label><input type="checkbox" id="bhLipid">③ 脂質: 中性脂肪 ≥150 / HDL <40 上記いずれかに該当</label>
+<div class="checks" style="margin-top:10px">
+
+  <label><input type="checkbox" id="bhBp">
+    ① 収縮期130以上 / 拡張期85以上
+  </label>
+
+  <label><input type="checkbox" id="bhSugar">
+    ② 空腹時100以上 / HbA1c 5.6%以上
+  </label>
+
+  <label><input type="checkbox" id="bhLipid">
+    ③ TG150以上 / HDL40未満
+  </label>
 </div>
+
 <label>喫煙していますか？</label>
-<select id="bhSmoke"><option value="no">いいえ</option><option value="yes">はい</option></select>
+<select id="bhSmoke">
+  <option value="no">いいえ</option>
+  <option value="yes">はい</option>
+</select>
+
 <label>年齢は65歳以上ですか？</label>
-<select id="bhAge"><option value="no">いいえ</option><option value="yes">はい</option></select>
-<button class="btn" onclick="judgeBHStep2()">判定</button>
-<button class="btn secondary" onclick="resetBHStep2()">ステップ2クリア</button>
+<select id="bhAge">
+  <option value="no">いいえ</option>
+  <option value="yes">はい</option>
+</select>
+
+<button class="btn" onclick="judgeBHStep2()">ステップ2判定</button>
+
 <div id="bhStep2Result" class="result"></div>
+</div>
 </div>
 
 <script>
-function showResult(elem,text,cls){elem.textContent=text;elem.className='result '+cls+' show';setTimeout(()=>elem.scrollIntoView({behavior:'smooth',block:'center'}),100);}
-function clearResult(elem){elem.textContent='';elem.className='result';}
+function showResult(elem,text,cls){
+  elem.textContent=text;
+  elem.className='result '+cls+' show';
+}
+function clearResult(elem){
+  elem.textContent='';
+  elem.className='result';
+}
 
 /* 理想体重 */
 function calculateIdeal(){
   const g=document.getElementById('iwGender').value;
   const h=parseFloat(document.getElementById('iwHeight').value);
   const out=document.getElementById('iwResult');
-  if(isNaN(h)||h<=0){showResult(out,'正しい身長を入力してください','info');return;}
-  const m=h/100; const bmi=(g==='male')?24:22; showResult(out,`理想体重(BMI ${bmi}): ${(bmi*m*m).toFixed(1)} kg`,'info');
+  if(isNaN(h)||h<=0){showResult(out,'身長が正しくありません','info');return;}
+  const m=h/100; const bmi=(g==='male')?24:22;
+  showResult(out,`理想体重 : ${(bmi*m*m).toFixed(1)} kg`,'info');
 }
-function resetIdeal(){document.getElementById('iwHeight').value='';clearResult(document.getElementById('iwResult'));}
+function resetIdeal(){
+  document.getElementById('iwHeight').value='';
+  clearResult(document.getElementById('iwResult'));
+}
 
 /* メタボ判定 */
 function judgeMetabo(){
@@ -127,12 +176,16 @@ function judgeMetabo(){
   const sugar=document.getElementById('mb_sugar').checked;
   const lipid=document.getElementById('mb_lipid').checked;
   const out=document.getElementById('mbResult');
+
   if(waist==='no'){showResult(out,'非該当','info');return;}
-  let count=0;if(bp)count++;if(sugar)count++;if(lipid)count++;
-  if(count===0)showResult(out,'非該当','info');
-  else if(count===1)showResult(out,'予備軍','warn');
+
+  let c=0; if(bp)c++; if(sugar)c++; if(lipid)c++;
+
+  if(c===0)showResult(out,'非該当','info');
+  else if(c===1)showResult(out,'予備軍','warn');
   else showResult(out,'基準該当','danger');
 }
+
 function resetMetabo(){
   document.getElementById('mbWaist').value='no';
   document.getElementById('mb_bp').checked=false;
@@ -142,21 +195,40 @@ function resetMetabo(){
 }
 
 /* 保健指導 */
-window.bhStep1Type='';
-function checkBHStep1(){
+let BHtype='';
+
+function checkBH(){
   const waist=document.getElementById('bhWaist').value;
   const bmi=document.getElementById('bhBmi').value;
   const med=document.getElementById('bhMed').value;
-  const out=document.getElementById('bhStep1Result');
+  const out=document.getElementById('bhResult');
   const step2=document.getElementById('bhStep2');
-  if(med==='yes'){showResult(out,'情報提供','info');step2.classList.remove('open');clearResult(document.getElementById('bhStep2Result'));window.bhStep1Type='';return;}
-  if(waist==='no'&&bmi==='yes'){window.bhStep1Type='基準1';step2.classList.add('open');clearResult(document.getElementById('bhStep2Result'));return;}
-  if(waist==='yes'){window.bhStep1Type='基準2';step2.classList.add('open');clearResult(document.getElementById('bhStep2Result'));return;}
-  window.bhStep1Type='該当なし';showResult(out,'情報提供','info');step2.classList.remove('open');clearResult(document.getElementById('bhStep2Result'));
+
+  if(med==='yes'){
+    showResult(out,'情報提供','info');
+    step2.classList.remove('open');
+    return;
+  }
+
+  if(waist==='no' && bmi==='yes'){
+    BHtype='基準1';
+    out.textContent='';
+    step2.classList.add('open');
+    return;
+  }
+
+  if(waist==='yes'){
+    BHtype='基準2';
+    out.textContent='';
+    step2.classList.add('open');
+    return;
+  }
+
+  showResult(out,'情報提供','info');
+  step2.classList.remove('open');
 }
 
 function judgeBHStep2(){
-  if(!window.bhStep1Type||window.bhStep1Type==='該当なし')return;
   const bp=document.getElementById('bhBp').checked;
   const sugar=document.getElementById('bhSugar').checked;
   const lipid=document.getElementById('bhLipid').checked;
@@ -164,19 +236,46 @@ function judgeBHStep2(){
   const age=document.getElementById('bhAge').value;
   const out=document.getElementById('bhStep2Result');
 
-  let count=0;if(bp)count++;if(sugar)count++;if(lipid)count++;
+  let c=0; if(bp)c++; if(sugar)c++; if(lipid)c++;
 
-  let text='',cls='';
-  if(window.bhStep1Type==='基準1'){
-    if(count===0){text='情報提供'; cls='info';}
-    else if(count===1){text='動機づけ支援'; cls='warn';}
-    else if(count===2){text=(smoke==='yes')?(age==='yes'?'動機づけ支援':'積極的支援'):'動機づけ支援'; cls=(smoke==='yes')?(age==='yes'?'warn':'danger'):'warn';}
-    else{text=(age==='yes')?'動機づけ支援':'積極的支援'; cls=(age==='yes')?'warn':'danger';}
-  } else if(window.bhStep1Type==='基準2'){
-    if(count===0){text='情報提供'; cls='info';}
-    else if(count===1){text='動機づけ支援'; cls='warn';} // 1件該当 喫煙なし 動機づけ、喫煙ありは年齢で判定
-    else{text=(age==='yes')?'動機づけ支援':'積極的支援'; cls=(age==='yes')?'warn':'danger';} // 2件以上 年齢のみ
+  let text='', cls='';
+
+  /* ーーーー 基準1 ーーーー */
+  if(BHtype==='基準1'){
+    if(c===0){text='情報提供'; cls='info';}
+    else if(c===1){text='動機づけ支援'; cls='warn';}
+    else if(c===2){
+      if(smoke==='yes'){
+        text=(age==='yes')?'動機づけ支援':'積極的支援';
+        cls=(age==='yes')?'warn':'danger';
+      }else{
+        text='動機づけ支援'; cls='warn';
+      }
+    }else{
+      text=(age==='yes')?'動機づけ支援':'積極的支援';
+      cls=(age==='yes')?'warn':'danger';
+    }
   }
+
+  /* ーーーー 基準2（今回修正）ーーーー */
+  if(BHtype==='基準2'){
+    if(c===0){text='情報提供'; cls='info';}
+
+    else if(c===1){
+      if(smoke==='no'){ // 喫煙なし → 動機づけ
+        text='動機づけ支援'; cls='warn';
+      }else{ // 喫煙あり → 年齢で判断
+        text=(age==='yes')?'動機づけ支援':'積極的支援';
+        cls=(age==='yes')?'warn':'danger';
+      }
+    }
+
+    else { // 2つ以上 → 年齢のみ
+      text=(age==='yes')?'動機づけ支援':'積極的支援';
+      cls=(age==='yes')?'warn':'danger';
+    }
+  }
+
   showResult(out,text,cls);
 }
 
@@ -186,16 +285,9 @@ function resetBH(){
   document.getElementById('bhMed').value='no';
   document.getElementById('bhSmoke').value='no';
   document.getElementById('bhAge').value='no';
-  window.bhStep1Type='';
-  clearResult(document.getElementById('bhStep1Result'));
-  document.getElementById('bhStep2').classList.remove('open');
-  resetBHStep2();
-}
-function resetBHStep2(){
-  document.getElementById('bhBp').checked=false;
-  document.getElementById('bhSugar').checked=false;
-  document.getElementById('bhLipid').checked=false;
+  clearResult(document.getElementById('bhResult'));
   clearResult(document.getElementById('bhStep2Result'));
+  document.getElementById('bhStep2').classList.remove('open');
 }
 </script>
 </body>
