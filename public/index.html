@@ -1,70 +1,225 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>メタボ & 保健指導チェックシート 完全版（性別入力なし）</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    h2 { margin-bottom: 10px; }
-    .section { margin-bottom: 20px; }
-    .result { font-size: 1.3em; font-weight: bold; padding: 15px; margin-top: 15px; border-radius: 10px; }
-    .green { background: #d4f7d4; }   
-    .yellow { background: #fff3b0; }  
-    .red { background: #ffc5c5; }    
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健康チェック & 理想体重計算</title>
+<style>
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f5f6fa;
+  padding: 15px;
+  color: #333;
+}
+h2 {
+  text-align: center;
+  color: #4b4bff;
+  margin-bottom: 25px;
+  font-size: 1.8em;
+}
+.section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.section h3 {
+  color: #4b4bff;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  border-bottom: 2px solid #e0e0ff;
+  padding-bottom: 5px;
+}
+label {
+  font-size: 1.05em;
+  cursor: pointer;
+}
+.radio-btn {
+  display: inline-block;
+  margin-right: 20px;
+}
+.radio-btn input[type="radio"] {
+  margin-right: 5px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+input[type="number"], select {
+  font-size: 1.05em;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1em;
+  color: white;
+  background-color: #4b4bff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 15px;
+}
+button:hover {
+  background-color: #3838d1;
+}
+.result {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.green { background-color: #c3f0c3; color: #27632a; }
+.yellow { background-color: #fff5b2; color: #6b5e00; }
+.red { background-color: #ffb3b3; color: #8b1c1c; }
+@media (max-width: 480px) {
+  body { padding: 10px; }
+  .section { padding: 15px; }
+  h2 { font-size: 1.5em; }
+  button { font-size: 1em; padding: 10px; }
+  .result { font-size: 1.1em; padding: 12px; }
+}
+</style>
 </head>
-
 <body>
 
-<h2>メタボチェック & 保健指導チェックシート</h2>
+<h2>健康チェック & 理想体重計算</h2>
 
-<form id="form">
-
+<!-- メタボ & 保健指導チェックシート -->
 <div class="section">
-<h3>🔹 ステップ1：腹囲・BMI・服薬</h3>
+<h3>メタボ & 保健指導チェックシート</h3>
+<form id="form">
+<b style="font-size:1.1em; color:#ff4b4b;">腹囲は基準以上ですか？</b><br>
+<span style="font-size:0.95em; color:#555;">
+男性: 85cm以上<br>女性: 90cm以上
+</span><br>
+<div class="radio-btn">
+  <input type="radio" id="waist_yes" name="waist" value="yes">
+  <label for="waist_yes">はい</label>
+</div>
+<div class="radio-btn">
+  <input type="radio" id="waist_no" name="waist" value="no">
+  <label for="waist_no">いいえ</label>
+</div>
+<br><br>
 
-<b>腹囲は基準以上ですか？</b>（男性 ≥ 85cm / 女性 ≥ 90cm）<br>
-<label><input type="radio" name="waist" value="yes"> はい</label>
-<label><input type="radio" name="waist" value="no"> いいえ</label><br><br>
-
-<b>BMIは25以上ですか？（kg/m²）</b><br>
-<label><input type="radio" name="bmi" value="yes"> はい</label>
-<label><input type="radio" name="bmi" value="no"> いいえ</label><br><br>
+<b>BMIは25以上ですか？</b><br>
+<div class="radio-btn">
+  <input type="radio" id="bmi_yes" name="bmi" value="yes">
+  <label for="bmi_yes">はい</label>
+</div>
+<div class="radio-btn">
+  <input type="radio" id="bmi_no" name="bmi" value="no">
+  <label for="bmi_no">いいえ</label>
+</div>
+<br><br>
 
 <b>服薬はありますか？</b><br>
-<label><input type="radio" name="med" value="yes"> はい</label>
-<label><input type="radio" name="med" value="no"> いいえ</label><br><br>
+<div class="radio-btn">
+  <input type="radio" id="med_yes" name="med" value="yes">
+  <label for="med_yes">はい</label>
 </div>
+<div class="radio-btn">
+  <input type="radio" id="med_no" name="med" value="no">
+  <label for="med_no">いいえ</label>
+</div>
+<br><br>
 
-<div class="section">
-<h3>🔹 ステップ2：検査値・喫煙・年齢</h3>
-<b>①血圧（収縮期 ≥ 130 mmHg または 拡張期 ≥ 85 mmHg）</b><br>
-<label><input type="radio" name="bp" value="yes"> はい</label>
-<label><input type="radio" name="bp" value="no"> いいえ</label><br><br>
+<b>①血圧</b><br>
+<span style="font-size:0.95em; color:#555;">
+収縮期 ≥ 130 mmHg<br>または<br>拡張期 ≥ 85 mmHg
+</span><br>
+<div class="radio-btn">
+  <input type="radio" id="bp_yes" name="bp" value="yes">
+  <label for="bp_yes">はい</label>
+</div>
+<div class="radio-btn">
+  <input type="radio" id="bp_no" name="bp" value="no">
+  <label for="bp_no">いいえ</label>
+</div>
+<br><br>
 
-<b>②血糖（空腹時 ≥ 100 mg/dL または HbA1c ≥ 5.6 %）</b><br>
-<label><input type="radio" name="gl" value="yes"> はい</label>
-<label><input type="radio" name="gl" value="no"> いいえ</label><br><br>
+<b>②血糖</b><br>
+<span style="font-size:0.95em; color:#555;">
+空腹時 ≥ 100 mg/dL<br>または<br>HbA1c ≥ 5.6 %
+</span><br>
+<div class="radio-btn">
+  <input type="radio" id="gl_yes" name="gl" value="yes">
+  <label for="gl_yes">はい</label>
+</div>
+<div class="radio-btn">
+  <input type="radio" id="gl_no" name="gl" value="no">
+  <label for="gl_no">いいえ</label>
+</div>
+<br><br>
 
-<b>③脂質（TG ≥ 150 mg/dL または HDL < 40 mg/dL）</b><br>
-<label><input type="radio" name="lipid" value="yes"> はい</label>
-<label><input type="radio" name="lipid" value="no"> いいえ</label><br><br>
+<b>③脂質</b><br>
+<span style="font-size:0.95em; color:#555;">
+TG ≥ 150 mg/dL<br>または<br>HDL < 40 mg/dL
+</span><br>
+<div class="radio-btn">
+  <input type="radio" id="lipid_yes" name="lipid" value="yes">
+  <label for="lipid_yes">はい</label>
+</div>
+<div class="radio-btn">
+  <input type="radio" id="lipid_no" name="lipid" value="no">
+  <label for="lipid_no">いいえ</label>
+</div>
+<br><br>
 
 <b>喫煙していますか？</b><br>
-<label><input type="radio" name="smoke" value="yes"> はい</label>
-<label><input type="radio" name="smoke" value="no"> いいえ</label><br><br>
+<div class="radio-btn">
+  <input type="radio" id="smoke_yes" name="smoke" value="yes">
+  <label for="smoke_yes">はい</label>
+</div>
+<div class="radio-btn">
+  <input type="radio" id="smoke_no" name="smoke" value="no">
+  <label for="smoke_no">いいえ</label>
+</div>
+<br><br>
 
 <b>年齢は65歳以上ですか？</b><br>
-<label><input type="radio" name="age" value="yes"> はい</label>
-<label><input type="radio" name="age" value="no"> いいえ</label><br><br>
+<div class="radio-btn">
+  <input type="radio" id="age_yes" name="age" value="yes">
+  <label for="age_yes">はい</label>
 </div>
+<div class="radio-btn">
+  <input type="radio" id="age_no" name="age" value="no">
+  <label for="age_no">いいえ</label>
+</div>
+<br>
 
 <button type="button" onclick="judge()">判定する</button>
 </form>
-
 <div id="result_meta" class="result"></div>
 <div id="result_hoken" class="result"></div>
+</div>
+
+<!-- 理想体重計算 -->
+<div class="section">
+<h3>理想体重計算</h3>
+<label>性別を選択してください:</label>
+<select id="gender">
+  <option value="male">男性</option>
+  <option value="female">女性</option>
+</select>
+
+<label>身長を入力してください (cm):</label>
+<input type="number" id="height" placeholder="例: 170">
+
+<button type="button" onclick="calculateWeight()">計算する</button>
+
+<div id="weight_result" class="result"></div>
+</div>
 
 <script>
 function judge(){
@@ -77,14 +232,11 @@ function judge(){
   const smoke = document.querySelector('input[name="smoke"]:checked')?.value;
   const age = document.querySelector('input[name="age"]:checked')?.value;
 
-  if(!waist || !bmi || !med || !bp || !gl || !lipid || !smoke || !age){
+  if(!waist||!bmi||!med||!bp||!gl||!lipid||!smoke||!age){
     alert("すべての項目を選択してください");
     return;
   }
 
-  // ----------------------
-  // メタボ判定（消してない）
-  // ----------------------
   let meta_count=0;
   if(bp==="yes") meta_count++;
   if(gl==="yes") meta_count++;
@@ -100,112 +252,54 @@ function judge(){
   document.getElementById("result_meta").textContent="【メタボチェック判定】 "+meta_result;
   document.getElementById("result_meta").className="result "+meta_color;
 
-
-  // ----------------------
-  // 保健指導判定（完全修正版）
-  // ----------------------
-  let step1_hoken="";
-
-  // Step1：情報提供で即終了
-  if(med==="yes" || waist==="no"){ 
-    document.getElementById("result_hoken").textContent="【保健指導判定】 情報提供";
-    document.getElementById("result_hoken").className="result green";
-    return;
-  }
-  else if(waist==="no" && bmi==="yes"){
-    step1_hoken="基準1";
-  }
-  else{
-    step1_hoken="基準2";
-  }
-
-  // Step2該当数
-  let count2=0;
-  if(bp==="yes") count2++;
-  if(gl==="yes") count2++;
-  if(lipid==="yes") count2++;
-
   let hoken_result="", hoken_color="";
+  if(med==="yes"){
+    hoken_result="情報提供"; hoken_color="green";
+  } else {
+    let step1_hoken="";
+    if(waist==="no" && bmi==="yes") step1_hoken="基準1";
+    else if(waist==="yes") step1_hoken="基準2";
+    else step1_hoken="該当なし";
 
-  // ------------------------
-  // 基準1
-  // ------------------------
-  if(step1_hoken==="基準1"){
+    let count2=0;
+    if(bp==="yes") count2++;
+    if(gl==="yes") count2++;
+    if(lipid==="yes") count2++;
 
-    if(count2===0){
-      hoken_result="情報提供"; 
-      hoken_color="green";
+    if(step1_hoken==="基準1"){
+      if(count2===0){ hoken_result="情報提供"; hoken_color="green"; }
+      else if(count2===1){ hoken_result="動機づけ支援"; hoken_color="yellow"; }
+      else if(count2===2){ hoken_result=(smoke==="no")?"動機づけ支援":((age==="yes")?"動機づけ支援":"積極的支援"); hoken_color=(smoke==="no")?"yellow":((age==="yes")?"yellow":"red"); }
+      else if(count2===3){ hoken_result=(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(age==="yes")?"yellow":"red"; }
     }
 
-    else if(count2===1){
-      hoken_result="動機づけ支援"; 
-      hoken_color="yellow";
+    if(step1_hoken==="基準2"){
+      if(count2===0){ hoken_result="情報提供"; hoken_color="green"; }
+      else if(count2===1){ hoken_result=(smoke==="no")?"動機づけ支援":((age==="yes")?"動機づけ支援":"積極的支援"); hoken_color=(smoke==="no")?"yellow":((age==="yes")?"yellow":"red"); }
+      else if(count2>=2){ hoken_result=(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(age==="yes")?"yellow":"red"; }
     }
 
-    else if(count2===2){
-      if(smoke==="no"){
-        hoken_result="動機づけ支援"; 
-        hoken_color="yellow";
-      }else{
-        if(age==="yes"){
-          hoken_result="動機づけ支援"; 
-          hoken_color="yellow";
-        }else{
-          hoken_result="積極的支援"; 
-          hoken_color="red";
-        }
-      }
-    }
-
-    else if(count2===3){
-      if(age==="yes"){
-        hoken_result="動機づけ支援"; 
-        hoken_color="yellow";
-      }else{
-        hoken_result="積極的支援"; 
-        hoken_color="red";
-      }
-    }
-  }
-
-  // ------------------------
-  // 基準2
-  // ------------------------
-  if(step1_hoken==="基準2"){
-
-    if(count2===0){
-      hoken_result="情報提供"; 
-      hoken_color="green";
-    }
-
-    else if(count2===1){
-      if(smoke==="no"){
-        hoken_result="動機づけ支援"; 
-        hoken_color="yellow";
-      }else{
-        if(age==="yes"){
-          hoken_result="動機づけ支援"; 
-          hoken_color="yellow";
-        }else{
-          hoken_result="積極的支援"; 
-          hoken_color="red";
-        }
-      }
-    }
-
-    else if(count2>=2){
-      if(age==="yes"){
-        hoken_result="動機づけ支援"; 
-        hoken_color="yellow";
-      }else{
-        hoken_result="積極的支援"; 
-        hoken_color="red";
-      }
-    }
+    if(step1_hoken==="該当なし"){ hoken_result="情報提供"; hoken_color="green"; }
   }
 
   document.getElementById("result_hoken").textContent="【保健指導判定】 "+hoken_result;
   document.getElementById("result_hoken").className="result "+hoken_color;
+}
+
+function calculateWeight() {
+    const gender = document.getElementById('gender').value;
+    const heightCm = parseFloat(document.getElementById('height').value);
+
+    if (isNaN(heightCm) || heightCm <= 0) {
+        document.getElementById('weight_result').innerText = '正しい身長を入力してください';
+        return;
+    }
+
+    const heightM = heightCm / 100;
+    const bmiTarget = (gender === 'male') ? 24 : 22;
+    const idealWeight = bmiTarget * heightM * heightM;
+
+    document.getElementById('weight_result').innerText = 理想体重は ${idealWeight.toFixed(1)} kg です。;
 }
 </script>
 
