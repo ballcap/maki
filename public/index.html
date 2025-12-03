@@ -1,83 +1,142 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>まきメタボ・特定保健指導判定</title>
+<meta charset="UTF-8">
+<title>メタボ＆保健指導チェックシート 完全版</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+h2 { margin-bottom: 10px; }
+.section { margin-bottom: 20px; }
+.result { font-size: 1.3em; font-weight: bold; padding: 15px; margin-top: 15px; border-radius: 10px; }
+.green { background: #d4f7d4; }   
+.yellow { background: #fff3b0; }  
+.red { background: #ffc5c5; }    
+</style>
 </head>
 <body>
-<h1>まきメタボ判定・特定保健指導</h1>
 
-<form id="checkForm">
-    <p>腹囲が基準以上ですか？（男性85cm以上／女性90cm以上）<br>
-        <label><input type="radio" name="waist" value="yes">はい</label>
-        <label><input type="radio" name="waist" value="no">いいえ</label>
-    </p>
+<h2>メタボチェック & 保健指導チェックシート</h2>
 
-    <p>BMIが25以上ですか？<br>
-        <label><input type="radio" name="bmi" value="yes">はい</label>
-        <label><input type="radio" name="bmi" value="no">いいえ</label>
-    </p>
+<form id="form">
 
-    <p>血糖が基準以上ですか？（空腹時血糖100以上／HbA1c5.6%以上）<br>
-        <label><input type="radio" name="glucose" value="yes">はい</label>
-        <label><input type="radio" name="glucose" value="no">いいえ</label>
-    </p>
+<div class="section">
+<h3>🔹 ステップ1：腹囲・BMI・服薬</h3>
+性別：<br>
+<label><input type="radio" name="sex" value="male"> 男性</label><br>
+<label><input type="radio" name="sex" value="female"> 女性</label><br><br>
 
-    <p>脂質が基準以上ですか？（TG150以上／随時175以上／HDL40未満）<br>
-        <label><input type="radio" name="lipid" value="yes">はい</label>
-        <label><input type="radio" name="lipid" value="no">いいえ</label>
-    </p>
+<b>腹囲は基準以上ですか？</b>（男性 ≥ 85cm / 女性 ≥ 90cm）<br>
+<label><input type="radio" name="waist" value="yes"> はい</label>
+<label><input type="radio" name="waist" value="no"> いいえ</label><br><br>
 
-    <p>血圧が基準以上ですか？（収縮期130以上／拡張期85以上）<br>
-        <label><input type="radio" name="bp" value="yes">はい</label>
-        <label><input type="radio" name="bp" value="no">いいえ</label>
-    </p>
+<b>BMIは25以上ですか？（kg/m²）</b><br>
+<label><input type="radio" name="bmi" value="yes"> はい</label>
+<label><input type="radio" name="bmi" value="no"> いいえ</label><br><br>
 
-    <p>糖尿病・脂質異常症・高血圧症で薬剤治療中ですか？<br>
-        <label><input type="radio" name="med" value="yes">はい</label>
-        <label><input type="radio" name="med" value="no">いいえ</label>
-    </p>
+<b>服薬はありますか？</b><br>
+<label><input type="radio" name="med" value="yes"> はい</label>
+<label><input type="radio" name="med" value="no"> いいえ</label><br><br>
+</div>
 
-    <button type="button" onclick="judge()">判定する</button>
+<div class="section">
+<h3>🔹 ステップ2：検査値・喫煙・年齢</h3>
+<b>①血圧（収縮期 ≥ 130 mmHg または 拡張期 ≥ 85 mmHg）</b><br>
+<label><input type="radio" name="bp" value="yes"> はい</label>
+<label><input type="radio" name="bp" value="no"> いいえ</label><br><br>
+
+<b>②血糖（空腹時 ≥ 100 mg/dL または HbA1c ≥ 5.6 %）</b><br>
+<label><input type="radio" name="gl" value="yes"> はい</label>
+<label><input type="radio" name="gl" value="no"> いいえ</label><br><br>
+
+<b>③脂質（TG ≥ 150 mg/dL または HDL < 40 mg/dL）</b><br>
+<label><input type="radio" name="lipid" value="yes"> はい</label>
+<label><input type="radio" name="lipid" value="no"> いいえ</label><br><br>
+
+<b>喫煙していますか？</b><br>
+<label><input type="radio" name="smoke" value="yes"> はい</label>
+<label><input type="radio" name="smoke" value="no"> いいえ</label><br><br>
+
+<b>年齢は65歳以上ですか？</b><br>
+<label><input type="radio" name="age" value="yes"> はい</label>
+<label><input type="radio" name="age" value="no"> いいえ</label><br><br>
+</div>
+
+<button type="button" onclick="judge()">判定する</button>
 </form>
 
-<div id="result"></div>
+<div id="result_meta" class="result"></div>
+<div id="result_hoken" class="result"></div>
 
 <script>
-    function judge(){
-      const f = document.forms['checkForm'];
-      const waist = f.waist.value === 'yes';
-      const bmi = f.bmi.value === 'yes';
-      const glucose = f.glucose.value === 'yes';
-      const lipid = f.lipid.value === 'yes';
-      const bp = f.bp.value === 'yes';
-      const med = f.med.value === 'yes';
+function judge(){
+  // ステップ1
+  const waist = document.querySelector('input[name="waist"]:checked')?.value;
+  const bmi = document.querySelector('input[name="bmi"]:checked')?.value;
+  const med = document.querySelector('input[name="med"]:checked')?.value;
+  const bp = document.querySelector('input[name="bp"]:checked')?.value;
+  const gl = document.querySelector('input[name="gl"]:checked')?.value;
+  const lipid = document.querySelector('input[name="lipid"]:checked')?.value;
+  const smoke = document.querySelector('input[name="smoke"]:checked')?.value;
+  const age = document.querySelector('input[name="age"]:checked')?.value;
 
-      if(med){
-        document.getElementById('result').innerHTML = "<p>薬剤治療中 → 対象外（医療機関管理）</p>";
-        return;
-      }
+  if(!waist || !bmi || !med || !bp || !gl || !lipid || !smoke || !age){
+    alert("すべての項目を選択してください");
+    return;
+  }
 
-      const risks = [bmi, glucose, lipid, bp].filter(x=>x).length;
+  // ----------------------
+  // メタボ判定
+  // ----------------------
+  let meta_count=0;
+  if(bp==="yes") meta_count++;
+  if(gl==="yes") meta_count++;
+  if(lipid==="yes") meta_count++;
 
-      let metab = "非該当";
-      let guidance = "対象外";
+  let meta_result="", meta_color="";
+  if(waist==="no"){ meta_result="非該当"; meta_color="green"; }
+  else{
+    if(meta_count===0){ meta_result="非該当"; meta_color="green"; }
+    else if(meta_count===1){ meta_result="予備軍"; meta_color="yellow"; }
+    else{ meta_result="基準該当"; meta_color="red"; }
+  }
+  document.getElementById("result_meta").textContent="【メタボチェック判定】 "+meta_result;
+  document.getElementById("result_meta").className="result "+meta_color;
 
-      if(waist && risks >= 2){
-        metab = "メタボ該当";
-        guidance = "積極的支援";
-      } else if(waist && risks === 1){
-        metab = "予備群";
-        guidance = "動機づけ支援";
-      } else if(!waist && risks >= 2){
-        metab = "予備群";
-        guidance = "動機づけ支援";
-      }
+  // ----------------------
+  // 保健指導判定
+  // ----------------------
+  let step1_hoken="";
+  if(med==="yes"){ step1_hoken="服薬あり"; }
+  else if(waist==="no" && bmi==="yes"){ step1_hoken="基準1"; }
+  else { step1_hoken="基準2"; }
 
-      document.getElementById('result').innerHTML =
-        `<p>メタボ判定：${metab}<br>特定保健指導区分 ${guidance}</p>`;
-    }
+  let count2=0;
+  if(bp==="yes") count2++;
+  if(gl==="yes") count2++;
+  if(lipid==="yes") count2++;
+
+  let hoken_result="", hoken_color="";
+
+  if(step1_hoken==="服薬あり"){
+    hoken_result="情報提供"; hoken_color="green";
+  }
+  else if(step1_hoken==="基準1"){
+    if(count2===0){ hoken_result="情報提供"; hoken_color="green"; }
+    else if(count2===1){ hoken_result="動機づけ支援"; hoken_color="yellow"; }
+    else if(count2===2){ hoken_result=(smoke==="no")?"動機づけ支援":(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(smoke==="no" || age==="yes")?"yellow":"red"; }
+    else if(count2===3){ hoken_result=(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(age==="yes")?"yellow":"red"; }
+  }
+  else if(step1_hoken==="基準2"){
+    if(count2===0){ hoken_result="情報提供"; hoken_color="green"; }
+    else if(count2===1){ hoken_result=(smoke==="no")?"動機づけ支援":(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(smoke==="no" || age==="yes")?"yellow":"red"; }
+    else if(count2===2){ hoken_result=(age==="yes")?"動機づけ支援":"積極的支援"; hoken_color=(age==="yes")?"yellow":"red"; }
+    // 基準2は3項目該当は存在しない
+  }
+
+  document.getElementById("result_hoken").textContent="【保健指導判定】 "+hoken_result;
+  document.getElementById("result_hoken").className="result "+hoken_color;
+}
 </script>
+
 </body>
 </html>
