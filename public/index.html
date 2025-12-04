@@ -257,20 +257,22 @@ function judgeBHStep2(){
     }
   }
 
-  /* ーーーー 基準2（今回修正）ーーーー */
+  /* ーーーー 基準2（今回修正済み）ーーーー */
   if(BHtype==='基準2'){
-    if(c===0){text='情報提供'; cls='info';}
+    if(c===0){
+      text='情報提供'; cls='info';
+    }
 
     else if(c===1){
-      if(smoke==='no'){ // 喫煙なし → 動機づけ
+      if(smoke==='no'){ // 修正：喫煙なし → 動機づけ支援
         text='動機づけ支援'; cls='warn';
-      }else{ // 喫煙あり → 年齢で判断
+      }else{ // 修正：喫煙あり → 年齢で分岐
         text=(age==='yes')?'動機づけ支援':'積極的支援';
         cls=(age==='yes')?'warn':'danger';
       }
     }
 
-    else { // 2つ以上 → 年齢のみ
+    else{ // 2つ以上 → 年齢のみ
       text=(age==='yes')?'動機づけ支援':'積極的支援';
       cls=(age==='yes')?'warn':'danger';
     }
@@ -285,6 +287,7 @@ function resetBH(){
   document.getElementById('bhMed').value='no';
   document.getElementById('bhSmoke').value='no';
   document.getElementById('bhAge').value='no';
+
   clearResult(document.getElementById('bhResult'));
   clearResult(document.getElementById('bhStep2Result'));
   document.getElementById('bhStep2').classList.remove('open');
